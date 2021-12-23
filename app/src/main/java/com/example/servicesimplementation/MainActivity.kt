@@ -49,13 +49,15 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun startMyService(intent: Intent) {
-        startService(intent)
+//        startService(intent)
+        MyService.enqueueWork(this, intent)
         Toast.makeText(this, "Service started succesfully!", Toast.LENGTH_SHORT).show()
     }
 
+    //Explicitly stopping the service does not work inside JobIntentService
     private fun stopMyService(intent: Intent) {
-        stopService(intent)
-        Toast.makeText(this, "Service stopped succesfully!", Toast.LENGTH_SHORT).show()
+//        stopService(intent)
+//        Toast.makeText(this, "Service stopped succesfully!", Toast.LENGTH_SHORT).show()
     }
 
     private fun establishServiceConnection() {

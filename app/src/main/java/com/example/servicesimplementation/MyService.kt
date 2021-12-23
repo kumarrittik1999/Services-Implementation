@@ -1,26 +1,27 @@
 package com.example.servicesimplementation
 
-import android.app.IntentService
-import android.app.Service
+import android.content.Context
 import android.content.Intent
 import android.os.Binder
 import android.os.IBinder
 import android.util.Log
+import androidx.core.app.JobIntentService
 
-class MyService(name: String? = "IntentService") : IntentService(name) {
-
-    constructor() : this("IntentService") {
-
-    }
+class MyService() : JobIntentService() {
 
     private val TAG = "ServiceDemo"
 
     private var isRandomNumberGeneratorOn = false
     private var generatedRandomNumber = 0
 
+    companion object {
+        fun enqueueWork(context: Context, intent: Intent) {
+            enqueueWork(context, MyService::class.java, 101, intent)
+        }
+    }
+
     override fun onCreate() {
         super.onCreate()
-        Log.i(TAG, "Thread running on " + Thread.currentThread().name)
         Log.i(TAG, "onCreate")
     }
 
@@ -33,31 +34,45 @@ class MyService(name: String? = "IntentService") : IntentService(name) {
 //        return super.onStartCommand(intent, flags, startId)
 //    }
 
-    override fun onHandleIntent(intent: Intent?) {
-        Log.i(TAG, "OnHandleIntent")
+//    override fun onHandleIntent(intent: Intent?) {
+//        Log.i(TAG, "OnHandleIntent")
+//        isRandomNumberGeneratorOn = true
+//        generateRandomNumber()
+//    }
+
+    //Works same as onHandleIntent
+    override fun onHandleWork(intent: Intent) {
+        Log.i(TAG, "OnHandleWork")
+        Log.i(TAG, "Thread running on " + Thread.currentThread().name)
         isRandomNumberGeneratorOn = true
         generateRandomNumber()
+        //stopSelf()
     }
 
-    override fun onBind(intent: Intent): IBinder {
-        Log.i(TAG, "onBind")
-        return MyBinder()
+    override fun onStopCurrentWork(): Boolean {
+        return true
     }
 
-    override fun onUnbind(intent: Intent?): Boolean {
-        Log.i(TAG, "onUnbind")
-        return super.onUnbind(intent)
-    }
-
-    override fun onDestroy() {
-        isRandomNumberGeneratorOn = false
-        Log.i(TAG, "onDestroy")
-    }
+//    override fun onBind(intent: Intent): IBinder {
+//        Log.i(TAG, "onBind")
+//        return MyBinder()
+//    }
+//
+//    override fun onUnbind(intent: Intent?): Boolean {
+//        Log.i(TAG, "onUnbind")
+//        return super.onUnbind(intent)
+//    }
+//
+//    override fun onDestroy() {
+//        isRandomNumberGeneratorOn = false
+//        Log.i(TAG, "onDestroy")
+//    }
 
     private fun generateRandomNumber() {
-        while(isRandomNumberGeneratorOn) {
+        while (isRandomNumberGeneratorOn) {
             Thread.sleep(1000)
             generatedRandomNumber = (0..100).random()
+            Log.i(TAG, generatedRandomNumber.toString())
         }
     }
 
