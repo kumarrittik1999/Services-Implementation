@@ -35,19 +35,6 @@ class MainActivity : AppCompatActivity() {
             stopMyService(serviceIntent)
         }
 
-        serviceConnection = object : ServiceConnection {
-            override fun onServiceConnected(name: ComponentName?, service: IBinder?) {
-                isBound = true
-                val binder = service as MyService.MyBinder
-                myService = binder.getMyService()
-            }
-
-            override fun onServiceDisconnected(name: ComponentName?) {
-                isBound = false
-            }
-
-        }
-
         binding.btnBindService.setOnClickListener {
             bindToMyService(serviceIntent)
         }
@@ -71,8 +58,24 @@ class MainActivity : AppCompatActivity() {
         Toast.makeText(this, "Service stopped succesfully!", Toast.LENGTH_SHORT).show()
     }
 
+    private fun establishServiceConnection() {
+        serviceConnection = object : ServiceConnection {
+
+            override fun onServiceConnected(name: ComponentName?, service: IBinder?) {
+                isBound = true
+                val binder = service as MyService.MyBinder
+                myService = service.getMyService()
+            }
+
+            override fun onServiceDisconnected(name: ComponentName?) {
+                isBound = false
+            }
+        }
+    }
+
     private fun bindToMyService(intent: Intent) {
         if(!isBound) {
+            establishServiceConnection()
             bindService(intent, serviceConnection, BIND_AUTO_CREATE)
             Toast.makeText(this, "Service bound succesfully!", Toast.LENGTH_SHORT).show()
             isBound = true
