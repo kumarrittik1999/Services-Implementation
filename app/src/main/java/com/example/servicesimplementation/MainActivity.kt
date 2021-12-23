@@ -12,7 +12,7 @@ import androidx.databinding.DataBindingUtil
 import com.example.servicesimplementation.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
-    private val TAG = "MainActivity"
+    private val TAG = "ServiceDemo"
 
     private lateinit var binding: ActivityMainBinding
 

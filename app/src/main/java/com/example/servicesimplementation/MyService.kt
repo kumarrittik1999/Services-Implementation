@@ -8,9 +8,9 @@ import android.util.Log
 
 class MyService : Service() {
 
-    private val TAG = "MyService"
+    private val TAG = "ServiceDemo"
 
-    private var isBound = false
+    private var isRandomNumberGeneratorOn = false
     private var generatedRandomNumber = 0
 
     override fun onCreate() {
@@ -20,30 +20,30 @@ class MyService : Service() {
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         Log.i(TAG, "onStartCommand")
+        isRandomNumberGeneratorOn = true
+        Thread(Runnable {
+            generateRandomNumber()
+        }).start()
         return super.onStartCommand(intent, flags, startId)
     }
 
     override fun onBind(intent: Intent): IBinder {
         Log.i(TAG, "onBind")
-        isBound = true
-        Thread(Runnable {
-            generateRandomNumber()
-        }).start()
         return MyBinder()
     }
 
     override fun onUnbind(intent: Intent?): Boolean {
         Log.i(TAG, "onUnbind")
-        isBound = false
         return super.onUnbind(intent)
     }
 
     override fun onDestroy() {
+        isRandomNumberGeneratorOn = false
         Log.i(TAG, "onDestroy")
     }
 
     private fun generateRandomNumber() {
-        while(isBound) {
+        while(isRandomNumberGeneratorOn) {
             Thread.sleep(1000)
             generatedRandomNumber = (0..100).random()
         }
