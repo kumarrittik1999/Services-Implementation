@@ -1,7 +1,4 @@
-# Services-Implementation
-Android Services Implementation
-
-Bound Service
+## Bound Service
 
 Services in android that are bound to other components of the application such as activities, content providers or other services are known as Bound Services.
 Bound Services can continuously send data to the foreground and help in updating the UI smoothly.
