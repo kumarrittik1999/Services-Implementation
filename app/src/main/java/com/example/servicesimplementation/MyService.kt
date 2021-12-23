@@ -1,12 +1,17 @@
 package com.example.servicesimplementation
 
+import android.app.IntentService
 import android.app.Service
 import android.content.Intent
 import android.os.Binder
 import android.os.IBinder
 import android.util.Log
 
-class MyService : Service() {
+class MyService(name: String? = "IntentService") : IntentService(name) {
+
+    constructor() : this("IntentService") {
+
+    }
 
     private val TAG = "ServiceDemo"
 
@@ -14,17 +19,24 @@ class MyService : Service() {
     private var generatedRandomNumber = 0
 
     override fun onCreate() {
+        super.onCreate()
         Log.i(TAG, "Thread running on " + Thread.currentThread().name)
         Log.i(TAG, "onCreate")
     }
 
-    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        Log.i(TAG, "onStartCommand")
+//    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+//        Log.i(TAG, "onStartCommand")
+//        isRandomNumberGeneratorOn = true
+//        Thread(Runnable {
+//            generateRandomNumber()
+//        }).start()
+//        return super.onStartCommand(intent, flags, startId)
+//    }
+
+    override fun onHandleIntent(intent: Intent?) {
+        Log.i(TAG, "OnHandleIntent")
         isRandomNumberGeneratorOn = true
-        Thread(Runnable {
-            generateRandomNumber()
-        }).start()
-        return super.onStartCommand(intent, flags, startId)
+        generateRandomNumber()
     }
 
     override fun onBind(intent: Intent): IBinder {
